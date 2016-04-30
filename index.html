@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> new document </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=gbk"/>
+    <script type="text/javascript">
+
+        // 新窗口打开时弹出确认框，是否打开
+
+        // 通过输入对话框，确定打开的网址，默认为 http：//www.imooc.com/
+
+        //打开的窗口要求，宽400像素，高500像素，无菜单栏、无工具栏。
+
+        window.onload=function(){
+            oIpt=document.getElementById('ipt');
+            oIpt.onclick=function () {
+               var newPage =  open("", "_blank", "width=400,height=500,menubar=no,toolbar=no");
+                var isOpen=newPage.prompt("确认是否打开新窗口？","http://www.baidu.com");
+                if(isOpen==null){
+                    newPage.close();
+                }else{
+                    newPage.document.location = isOpen;
+                }
+            }
+        }
+
+    </script>
+</head>
+<body>
+<input  id="ipt" type="button" value="新窗口打开网站"/>
+</body>
+</html>
