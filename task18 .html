@@ -1,0 +1,124 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+    <style>
+        .red {
+            background: red;
+            width: 50px;
+            height: 50px;
+            color: white;
+            margin: 4px;
+            float: left;
+            font-size: 24px;
+            line-height: 24px;
+            text-align: center;
+        }
+
+        .clearfix {
+            content: "";
+            display: block;
+            clear: both;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div class="clearfix">
+    <input id="ipt"/>
+    <button id="le-in">左侧入</button>
+    <button id="ri-in">右侧入</button>
+    <button id="le-out">左侧出</button>
+    <button id="ri-out">右侧出</button>
+</div>
+<div id="content">
+
+</div>
+
+
+</body>
+<script>
+    /*
+     * 如图，模拟一个队列，队列的每个元素是一个数字，初始队列为空
+     有一个input输入框，以及4个操作按钮
+     点击"左侧入"，将input中输入的数字从左侧插入队列中；
+     点击"右侧入"，将input中输入的数字从右侧插入队列中；
+     点击"左侧出"，读取并删除队列左侧第一个元素，并弹窗显示元素中数值；
+     点击"右侧出"，读取并删除队列又侧第一个元素，并弹窗显示元素中数值；
+     点击队列中任何一个元素，则该元素会被从队列中删除
+     * */
+    var arr = [];
+    var oContent = document.getElementById('content');
+    var oLeIn = document.getElementById('le-in');
+    var oRiIn = document.getElementById('ri-in');
+    var oLeOut = document.getElementById('le-out');
+    var oRiOut = document.getElementById('ri-out');
+
+
+    function leftIn() {
+        var oIpt = document.getElementById('ipt');
+        var valueIpt = oIpt.value;
+        arr.unshift(valueIpt);
+        loadData();
+    }
+    function rightIn() {
+        var oIpt = document.getElementById('ipt');
+        var valueIpt = oIpt.value;
+        arr.push(valueIpt);
+        loadData();
+
+    }
+    function leftOut() {
+        arr.shift();
+        loadData();
+
+    }
+    function rightOut() {
+        arr.pop();
+        loadData();
+
+    }
+
+
+    function loadData() {
+        deleteUi();
+        for (var i = 0; i < arr.length; i++) {
+            var oDiv = document.createElement('div');
+            oDiv.innerHTML = arr[i];
+            oContent.appendChild(oDiv);
+            oDiv.setAttribute("class", "red");
+//            new function (j) {
+//                oDiv.onclick = function () {
+//                    arr.splice(j, 1);
+//                    loadData();
+//                };
+//            }(i)
+
+            new function(){
+                var j=i;
+                oDiv.onclick = function () {
+                    arr.splice(j, 1);
+                    loadData();
+                };
+            }();
+        }
+    }
+
+
+    function deleteUi() {
+        while (oContent.hasChildNodes()) {
+            oContent.removeChild(oContent.firstChild);
+        }
+    }
+
+    function init() {
+        oLeIn.onclick = leftIn;
+        oRiIn.onclick = rightIn;
+        oLeOut.onclick = leftOut;
+        oRiOut.onclick = rightOut;
+    }
+    init();
+
+</script>
+</html>
