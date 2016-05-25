@@ -1,0 +1,198 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+    <style>
+        .red {
+            background: red;
+            width: 50px;
+            height: 50px;
+            color: white;
+            margin: 4px;
+            float: left;
+            font-size: 24px;
+            line-height: 24px;
+            text-align: center;
+        }
+
+        .yellow {
+            background: yellow;
+        }
+
+        .clearfix {
+            content: "";
+            display: block;
+            clear: both;
+            overflow: hidden;
+        }
+
+    </style>
+</head>
+<body>
+<div class="clearfix">
+    <textarea id="ipt" cols="20" rows="1"></textarea>
+    <button id="le-in">左侧入</button>
+    <button id="ri-in">右侧入</button>
+    <button id="le-out">左侧出</button>
+    <button id="ri-out">右侧出</button>
+    <div>
+        <textarea id="text" cols="20" rows="1"></textarea>
+        <button id="btn">查询</button>
+    </div>
+</div>
+<div id="content">
+
+</div>
+
+
+</body>
+<script>
+    /*
+     * 基于任务18进行升级
+     将新元素输入框从input改为textarea
+     允许一次批量输入多个内容，格式可以为数字、中文、英文等，可以通过用回车，
+     逗号（全角半角均可），顿号，空格（全角半角、Tab等均可）等符号作为不同内容的间隔
+     增加一个查询文本输入框，和一个查询按钮，当点击查询时，将查询词在各个元素内容中做模糊匹配，
+     将匹配到的内容进行特殊标识，如文字颜色等。举例，内容中有abcd，查询词为ab或bc，则该内容需要标识
+     * */
+    var arr = [];
+    var oContent = document.getElementById('content');
+    var oLeIn = document.getElementById('le-in');
+    var oRiIn = document.getElementById('ri-in');
+    var oLeOut = document.getElementById('le-out');
+    var oRiOut = document.getElementById('ri-out');
+
+
+    function leftIn() {
+        var tmp3 = changeData(startData());
+        if (tmp3.length == 1) {
+            for (var i = 0; i < tmp3.length; i++) {
+                arr.unshift(tmp3[i]);
+            }
+        }
+        if (tmp3.length > 1) {
+            for (var i = tmp3.length; i > 0; i--) {
+                arr.unshift(tmp3[i - 1]);
+            }
+        }
+        loadData();
+    }
+    function rightIn() {
+        var tmp3 = changeData(startData());
+        for (var i = 0; i < tmp3.length; i++) {
+            arr.push(tmp3[i]);
+        }
+        loadData();
+    }
+    function leftOut() {
+        arr.shift();
+        loadData();
+
+    }
+    function rightOut() {
+        arr.pop();
+        loadData();
+
+    }
+
+
+    function startData() {
+        var oIpt = document.getElementById('ipt');
+        var tmp = oIpt.value;
+        return tmp;
+    }
+
+    function changeData(data) {
+        var re = /[,，、；;\s]/ig;
+        var tmpdata = data.replace(re, '|');
+        var tmp2 = tmpdata.split('|');
+        return tmp2;
+    }
+
+    function query() {
+        var oText = document.getElementById('text');
+        var tmp1 = oText.value;
+        if (tmp1 == "") {
+            alert(' Can not be empty');
+        }
+        if (tmp1 != "") {
+            for (var i = 0; i < arr.length; i++) {
+                if (tmp1 == arr[i]) {
+                    var tmp4 = [];
+                    tmp4.push(arr[i]);
+                    loadData();
+                    for(var i=0;i<arr.length;i++){
+                        if (arr[i].search(tmp4) != -1) {
+                            highlightQuery(i);
+                        }
+                    }
+//                    if (tmp4 in arr) {
+//                        if (arr[i].search(tmp4) != -1) {
+//                            highlightQuery(i);
+//                        }
+//                    }
+                }
+//                return false;
+            }
+        }
+    }
+
+    //    高亮显示
+    //    function highlightQuery(data) {
+    //        var oDiv = document.createElement('div');
+    //        for (var i = 0; i < data.length; i++) {
+    //            oDiv.setAttribute("class", "yellow");
+    //        }
+    //    }
+
+    function highlightQuery(index) {
+        var cursor = oContent.children[index];
+        cursor.style.background = '#338900';
+    }
+
+    function loadData() {
+        deleteUi();
+        for (var i = 0; i < arr.length; i++) {
+            var oDiv = document.createElement('div');
+            oDiv.innerHTML = arr[i];
+            oContent.appendChild(oDiv);
+            oDiv.setAttribute("class", "red");
+//            new function (j) {
+//                oDiv.onclick = function () {
+//                    arr.splice(j, 1);
+//                    loadData();
+//                };
+//            }(i)
+
+            new function () {
+                var j = i;
+                oDiv.onclick = function () {
+                    arr.splice(j, 1);
+                    loadData();
+                };
+            }();
+
+
+        }
+    }
+
+
+    function deleteUi() {
+        while (oContent.hasChildNodes()) {
+            oContent.removeChild(oContent.firstChild);
+        }
+    }
+
+    function init() {
+        var oQuery = document.getElementById('btn');
+        oLeIn.onclick = leftIn;
+        oRiIn.onclick = rightIn;
+        oLeOut.onclick = leftOut;
+        oRiOut.onclick = rightOut;
+        oQuery.onclick = query;
+    }
+    init();
+
+</script>
+</html>
