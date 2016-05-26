@@ -1,0 +1,158 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+    <style>
+        #container {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 730px;
+            height: 240px;
+        }
+
+        .tier3 {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 340px;
+            height: 200px;
+        }
+
+        .tier2 {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 135px;
+            height: 160px;
+        }
+
+        .tier1 {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 52.5px;
+            height: 120px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="container">
+    <div class="tier3">
+        <div class="tier2">
+            <div class="tier1"></div>
+            <div class="tier1"></div>
+        </div>
+        <div class="tier2">
+            <div class="tier1"></div>
+            <div class="tier1"></div>
+        </div>
+    </div>
+    <div class="tier3">
+        <div class="tier2">
+            <div class="tier1"></div>
+            <div class="tier1"></div>
+        </div>
+        <div class="tier2">
+            <div class="tier1"></div>
+            <div class="tier1"></div>
+        </div>
+    </div>
+</div>
+
+<div id="control-box">
+    <input type="button" id="preorder" value="前序遍历">
+    <input type="button" id="inorder" value="中序遍历">
+    <input type="button" id="postorder" value="后序遍历">
+</div>
+
+</body>
+<script>
+    /*
+     * 思路：先给UI的数据存起来，在操作数据，做动画的驱动
+     * */
+    var arr = [];
+    //前序遍历
+    function preOrder(node) {
+        arr.push(node);
+        if (node.firstElementChild != null) {
+            preOrder(node.firstElementChild);
+        }
+        if (node.lastElementChild != null) {
+            preOrder(node.lastElementChild);
+        }
+    }
+    //中序遍历
+    function inOrder(node) {
+        if (node.firstElementChild != null) {
+            preOrder(node.firstElementChild);
+        }
+        arr.push(node);
+        if (node.lastElementChild != null) {
+            preOrder(node.lastElementChild);
+        }
+    }
+
+    //后续遍历
+    function postOrder(node) {
+        if (node.firstElementChild != null) {
+            preOrder(node.firstElementChild);
+        }
+        if (node.lastElementChild != null) {
+            preOrder(node.lastElementChild);
+        }
+        arr.push(node);
+    }
+
+    function render() {
+        var i = 0;
+        arr[i].style.backgroundColor = 'green';
+        var timer = setInterval(function () {
+            i++;
+            if (i >= arr.length) {
+                clearInterval(timer);
+                arr[arr.length - 1].style.backgroundColor = '#fff';
+                return;
+            }
+            arr[i - 1].style.backgroundColor = '#fff';
+            arr[i].style.backgroundColor = 'green';
+
+        }, 500);
+    }
+
+
+    function init() {
+        var oPreorder = document.getElementById('preorder');
+        var oInorder = document.getElementById('inorder');
+        var oPostorder = document.getElementById('postorder');
+        var oContainer = document.getElementById('container');
+        oPreorder.onclick = function () {
+            preOrder(oContainer);
+            render();
+        };
+        oInorder.onclick = function () {
+            inOrder(oContainer);
+            render();
+        };
+        oPostorder.onclick = function () {
+            postOrder(oPostorder);
+            render();
+        };
+    }
+    init();
+</script>
+</html>
