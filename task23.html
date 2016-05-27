@@ -114,6 +114,14 @@
      * 树的遍历算法和方式自定，但推荐可以提供多种算法的展示（增加多个按钮，每个按钮对应不同的算法）
      * */
 
+    /*
+    * 思路：
+    * 1. 先按顺序遍历节点，给数据存起来
+    * 2. 用数据去渲染页面
+    * 3. 遍历的渲染：记个标记在页面，如果标记为true就停止响应；
+    *               i=0的UI展示
+    *               起个定时器，i++每次的UI展示，i超过范围时候的UI展示，关定时器
+    * */
     var queenValue = [];
     var arr = [];
     var mark = false;
@@ -160,6 +168,7 @@
         }
         mark = true;
         var i = 0;
+        var timer;
         queenValue[i].style.backgroundColor = 'green';
         if (arr[i].search(queryIput.value) != -1) {
             queenValue[i].style.backgroundColor = 'red';
@@ -168,7 +177,7 @@
             return;
         }
 
-        var timer = setInterval(function () {
+        timer = setInterval(function () {
             i++;
             if (i >= arr.length) {
                 clearInterval(timer);
@@ -185,7 +194,6 @@
                 clearInterval(timer);
                 return;
             }
-
         }, 500);
     }
 
