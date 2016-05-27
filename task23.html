@@ -1,0 +1,209 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+    <style>
+        #container {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 1150px;
+            height: 340px;
+        }
+
+        .tier1 {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 540px;
+            height: 250px;
+        }
+
+        .tier2 {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 200px;
+            height: 160px;
+        }
+
+        .tier3 {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 90px;
+            height: 90px;
+        }
+
+        .tier4 {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 40px;
+            height: 40px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="container">十二星座
+    <div class="tier1">狮子座
+        <div class="tier2">双鱼座
+            <div class="tier3">水瓶座</div>
+            <div class="tier3">处女座</div>
+            <div class="tier3">白羊座</div>
+            <div class="tier3">巨蟹座</div>
+        </div>
+        <div class="tier2">沙发座</div>
+        <div class="tier2">星星座
+            <div class="tier3">金牛座</div>
+            <div class="tier3">天蝎座</div>
+        </div>
+    </div>
+    <div class="tier1">座位
+        <div class="tier2">靠岸
+            <div class="tier3">大鱼</div>
+            <div class="tier3">小鱼</div>
+            <div class="tier3">大鲨鱼</div>
+        </div>
+        <div class="tier2">海洋
+            <div class="tier3">空气
+                <div class="tier4">阳光</div>
+            </div>
+            <div class="tier3">沙滩</div>
+        </div>
+    </div>
+    <div class="tier1">羊咩咩</div>
+</div>
+<div id="control">
+    <input type="button" id="preorder" value="先序遍历">
+</div>
+<div id="action-box">
+    <input type="text" id="queryInput" size="20">
+    <input type="button" id="queryButton" value="查询">
+</div>
+
+
+</body>
+<script>
+    /*
+     *
+     增加一个输入框及一个“查询”按钮，点击按钮时，
+     开始在树中以动画形式查找节点内容和输入框中内容一致的节点，
+     找到后以特殊样式显示该节点，找不到的话给出找不到的提示。
+     查询过程中的展示过程和遍历过程保持一致*/
+
+    /*
+     * 树的遍历算法和方式自定，但推荐可以提供多种算法的展示（增加多个按钮，每个按钮对应不同的算法）
+     * */
+
+    var queenValue = [];
+    var arr = [];
+    var mark = false;
+    //先序，先给数据存起来
+    function perorder(node) {
+        queenValue.push(node);
+        arr.push(node.childNodes[0].nodeValue);
+        for (var i = 0; i < node.childElementCount; i++) {
+            if (node.children[i] != null) {
+                perorder(node.children[i]);
+            }
+        }
+    }
+
+
+    //用数据去渲染页面
+    function render() {
+        if (mark) {
+            alert('in animation');
+            return;
+        }
+
+        mark = true;
+        var i = 0;
+        queenValue[i].style.backgroundColor = 'green';
+        var timer = setInterval(function () {
+            i++;
+            if (i >= queenValue.length) {
+                clearInterval(timer);
+                mark = false;
+                queenValue[queenValue.length - 1].style.backgroundColor = '#fff';
+                return;
+            }
+            queenValue[i - 1].style.backgroundColor = '#fff';
+            queenValue[i].style.backgroundColor = 'green';
+        }, 500);
+    }
+
+    function rendertext() {
+        var queryIput = document.getElementById('queryInput');
+        if (mark) {
+            alert('in animation');
+            return;
+        }
+        mark = true;
+        var i = 0;
+        queenValue[i].style.backgroundColor = 'green';
+        if (arr[i].search(queryIput.value) != -1) {
+            queenValue[i].style.backgroundColor = 'red';
+            alert('找到了');
+            clearInterval(timer);
+            return;
+        }
+
+        var timer = setInterval(function () {
+            i++;
+            if (i >= arr.length) {
+                clearInterval(timer);
+                mark = false;
+                queenValue[queenValue.length - 1].style.backgroundColor = '#fff';
+                return
+            }
+            queenValue[i - 1].style.backgroundColor = '#fff';
+            queenValue[i].style.backgroundColor = 'green';
+            if (arr[i].search(queryIput.value) != -1) {
+                queenValue[i].style.backgroundColor = 'red';
+                alert('找到了');
+                mark = true;
+                clearInterval(timer);
+                return;
+            }
+
+        }, 500);
+    }
+
+
+    function init() {
+        var oPreorder = document.getElementById('preorder');
+        var oContainer = document.getElementById('container');
+        var oQuerybutton = document.getElementById('queryButton');
+        oPreorder.onclick = function () {
+            perorder(oContainer);
+            render();
+        };
+        oQuerybutton.onclick = function () {
+            perorder(oContainer);
+            rendertext();
+        }
+    }
+
+    init();
+</script>
+</html>
