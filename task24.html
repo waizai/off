@@ -1,0 +1,281 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+    <style>
+        #container {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 1150px;
+            height: 340px;
+        }
+
+        .tier1 {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 540px;
+            height: 250px;
+        }
+
+        .tier2 {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 200px;
+            height: 160px;
+        }
+
+        .tier3 {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 90px;
+            height: 90px;
+        }
+
+        .tier4 {
+            display: flex;
+            flex-direction: row;
+            padding: 15px 10px;
+            margin: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            width: 40px;
+            height: 40px;
+        }
+
+        #del, #preorder {
+            margin: 10px;
+        }
+        .new-layer{
+            border: 1px solid #000;
+            background-color: #54ffca;
+            width: 15px;
+            height: 15px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="container">十二星座
+    <div class="tier1">狮子座
+        <div class="tier2">双鱼座
+            <div class="tier3">水瓶座</div>
+            <div class="tier3">处女座</div>
+            <div class="tier3">白羊座</div>
+            <div class="tier3">巨蟹座</div>
+        </div>
+        <div class="tier2">沙发座</div>
+        <div class="tier2">星星座
+            <div class="tier3">金牛座</div>
+            <div class="tier3">天蝎座</div>
+        </div>
+    </div>
+    <div class="tier1">座位
+        <div class="tier2">靠岸
+            <div class="tier3">大鱼</div>
+            <div class="tier3">小鱼</div>
+            <div class="tier3">大鲨鱼</div>
+        </div>
+        <div class="tier2">海洋
+            <div class="tier3">空气
+                <div class="tier4">阳光</div>
+            </div>
+            <div class="tier3">沙滩</div>
+        </div>
+    </div>
+    <div class="tier1">羊咩咩</div>
+</div>
+<div id="control">
+    <input type="button" id="preorder" value="先序遍历">
+</div>
+<div id="action-box">
+    <input type="text" id="queryInput" size="20">
+    <input type="button" id="queryButton" value="查询">
+</div>
+<div>
+    <input type="button" id="del" value="删除">
+</div>
+<div>
+    <input type="text" id="addInput" size="20">
+    <input type="button" id="addQuery" value="添加">
+</div>
+
+
+</body>
+<script>
+    /*
+     * 23的思路：
+     * 1. 先按顺序遍历节点，给数据存起来
+     * 2. 用数据去渲染页面
+     * 3. 遍历的渲染：记个标记在页面，如果标记为true就停止响应；
+     *               i=0的UI展示
+     *               起个定时器，i++每次的UI展示，i超过范围时候的UI展示，关定时器
+     * */
+    /*
+     * 24的思路：
+     * 1.遍历节点，点击节点，给当前的节点存起来，触发事件
+     * 2.选中方法：之前存起来的节点的颜色改变
+     * 3.点击删除按钮：之前存起来的节点及其子节点被删除
+     * 4.点击添加按钮：输入框的内容存到data，之前存起来的节点下增加一个子节点，内容为data
+     */
+
+
+    var queenValue = [];
+    var arr = [];
+    var mark = false;
+    var selectDiv = [];
+    //先序，先给数据存起来
+    function perorder(node) {
+        queenValue.push(node);
+        arr.push(node.childNodes[0].nodeValue);
+        for (var i = 0; i < node.childElementCount; i++) {
+            if (node.children[i] != null) {
+                perorder(node.children[i]);
+            }
+        }
+    }
+
+
+    //用数据去渲染页面
+    function render() {
+        if (mark) {
+            alert('in animation');
+            return;
+        }
+
+        mark = true;
+        var i = 0;
+        queenValue[i].style.backgroundColor = 'green';
+        var timer = setInterval(function () {
+            i++;
+            if (i >= queenValue.length) {
+                clearInterval(timer);
+                mark = false;
+                queenValue[queenValue.length - 1].style.backgroundColor = '#fff';
+                return;
+            }
+            queenValue[i - 1].style.backgroundColor = '#fff';
+            queenValue[i].style.backgroundColor = 'green';
+        }, 500);
+    }
+
+    function renderText() {
+        var queryIput = document.getElementById('queryInput');
+        if (mark) {
+            alert('in animation');
+            return;
+        }
+        mark = true;
+        var i = 0;
+        var timer;
+        queenValue[i].style.backgroundColor = 'green';
+        if (arr[i].search(queryIput.value) != -1) {
+            queenValue[i].style.backgroundColor = 'red';
+            alert('找到了');
+            clearInterval(timer);
+            return;
+        }
+
+        timer = setInterval(function () {
+            i++;
+            if (i >= arr.length) {
+                clearInterval(timer);
+                mark = false;
+                queenValue[queenValue.length - 1].style.backgroundColor = '#fff';
+                return
+            }
+            queenValue[i - 1].style.backgroundColor = '#fff';
+            queenValue[i].style.backgroundColor = 'green';
+            if (arr[i].search(queryIput.value) != -1) {
+                queenValue[i].style.backgroundColor = 'red';
+                alert('找到了');
+                mark = true;
+                clearInterval(timer);
+                return;
+            }
+        }, 500);
+    }
+
+    //点击节点,变色
+    function clickNode() {
+        var divList = document.getElementById('container').getElementsByTagName('div');
+        for (var i in divList) {
+            divList[i].onclick = function (e) {
+                clearSelectDiv();
+                this.style.backgroundColor = 'blue';
+                e.stopPropagation();
+                selectDiv.push(this);
+            }
+        }
+    }
+
+    function clearSelectDiv() {
+        var allDiv = document.getElementsByTagName('div');
+        for (var i = 0; i < allDiv.length; i++) {
+            allDiv[i].style.backgroundColor = '#fff';
+        }
+        selectDiv = [];
+    }
+
+    function delBtn() {
+        if (selectDiv.length == 0) {
+            alert('请选定元素');
+        }
+        selectDiv[0].parentNode.removeChild(selectDiv[0]);
+    }
+    function addBtn() {
+        if (selectDiv.length == 0) {
+            alert('请选定元素');
+        }
+        var newDiv = document.createElement('div');
+        newDiv.innerHTML = document.getElementById('addInput').value;
+        newDiv.className = 'new-layer';
+        selectDiv[0].appendChild(newDiv);
+        clickNode();
+    }
+
+    function init() {
+        var oPreorder = document.getElementById('preorder');
+        var oContainer = document.getElementById('container');
+        var oQuerybutton = document.getElementById('queryButton');
+        var oDel = document.getElementById('del');
+        var oAddQuery = document.getElementById('addQuery');
+        oPreorder.onclick = function () {
+            perorder(oContainer);
+            render();
+        };
+        oQuerybutton.onclick = function () {
+            perorder(oContainer);
+            renderText();
+        };
+        clickNode();
+        //点击删除按钮
+        oDel.onclick = function () {
+            delBtn();
+        };
+        //点击添加按钮
+        oAddQuery.onclick = function () {
+            addBtn();
+        }
+    }
+
+    init();
+</script>
+</html>
