@@ -1,0 +1,205 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+    <style>
+        .hide {
+            display: none;
+        }
+
+        .active {
+            background: #b2de96 no-repeat 5px center;
+            color: #000;
+            width: 100px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <ul><span>列表1</span>
+        <ol class="hide">
+            <li>水瓶座</li>
+            <li>处女座</li>
+            <li>白羊座</li>
+            <li>
+                <ul><span>里面的列表1</span>
+                    <ol class="hide">
+                        <li>水平</li>
+                        <li>垂直</li>
+                    </ol>
+                </ul>
+            </li>
+
+
+        </ol>
+    </ul>
+    <ul><span>列表2</span>
+        <ol class="hide">
+            <li>巨蟹座</li>
+            <li>射手座</li>
+            <li>金牛座</li>
+        </ol>
+    </ul>
+    <ul><span>列表3</span>
+        <ol class="hide">
+            <li>沙发座</li>
+            <li>太阳</li>
+            <li>白云</li>
+        </ol>
+    </ul>
+
+    <ul><span>列表4</span>
+        <ol class="hide">
+            <li>大海</li>
+            <li>大山</li>
+            <li>树叶</li>
+            <li>
+                <ul><span>捉迷藏</span>
+                    <ol class="hide">
+                        <li>小孩子</li>
+                        <li>女孩</li>
+                        <li>男孩</li>
+                    </ol>
+                </ul>
+            </li>
+
+        </ol>
+    </ul>
+
+</div>
+<div>
+    <input id="iptText" type="text" size="20">
+    <input id="findBtn" type="button" value="查询">
+</div>
+<div>
+    <input id="addText" type="text" size="20">
+    <input id="addBtn" type="button" value="增加">
+    <input id="delText" type="button" value="删除">
+</div>
+
+
+</body>
+<script>
+    /*
+     *25的思路：
+     * 1.节点的折叠与展开
+     *   1. 遍历节点，改变display
+     *   2. 给父增加点击事件
+     * 2. 节点的查找
+     *   1.
+     * */
+
+    var $ = function (id) {
+        return document.getElementById(id);
+    };
+    //外面存一个数
+    var arr = [];
+    var tmp = [];
+    //折叠展开
+    function changeState() {
+        //找到ul ol元素
+        var oWrapper = document.getElementById('wrapper');
+        var aUl = oWrapper.getElementsByTagName('ul');
+        var aOl = oWrapper.getElementsByTagName('ol');
+        //遍历ul，添加点击展开折叠事件
+        for (var i in aUl) {
+            aUl[i].index = i;
+            aUl[i].onclick = function (e) {
+                e.stopPropagation();
+                for (var i = 0; i < aUl.length; i++) {
+                    if (i == this.index) {
+                        if (aOl[this.index].style.display == 'block') {
+                            aOl[this.index].style.display = 'none';
+                            aUl[this.index].className = '';
+                        } else {
+                            aOl[this.index].style.display = 'block';
+                            aUl[this.index].className = 'active';
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    //先序遍历节点，存数据到arr里
+    function preOrder(Node) {
+        tmp.push(Node);
+        arr.push(Node.childNodes[0].nodeValue);
+        for (var i = 0; i < Node.childElementCount; i++) {
+            if (Node.children[i] != null) {
+                preOrder(Node.children[i]);
+            }
+        }
+        console.log(arr);
+        console.log(tmp);
+    }
+    //节点的查找
+    function findNode() {
+        var i = 0;
+        var timer;
+        tmp[i].style.backgroundColor = 'green';
+        var value = $('iptText').value;
+        if (arr[i].search(value) != -1) {
+            tmp[i].style.backgroundColor = 'red';
+            openParent(tmp[i]);
+            alert('找到了');
+            clearInterval(timer);
+            return;
+        }
+        timer = setInterval(function () {
+            i++;
+            if (i >= arr.length) {
+                clearInterval(timer);
+                tmp[tmp.length - 1].style.backgroundColor = '#fff';
+                return;
+            }
+            tmp[i - 1].style.backgroundColor = '#fff';
+            tmp[i].style.backgroundColor = 'green';
+            if (arr[i].search(value) != -1) {
+                tmp[i].style.backgroundColor = 'red';
+                openParent(tmp[i]);
+                alert('找到了');
+                clearInterval(timer);
+                return;
+            }
+        }, 500);
+    }
+
+    function openParent(e) {
+        if (e.parentNode.nodeName == 'BODY') {
+            return;
+        } else if (e.parentNode.nodeName == 'OL') {
+            e.parentNode.style.display = 'block';
+        }
+        openParent(e.parentNode);
+    }
+    //增加 删除节点
+    //hover节点
+    function hoverChoose(){
+        for(var i=0;i<tmp.length;i++){
+            tmp[i].onmouseover=function(){
+                tmp[i-1].style.backgroundColor='#fff';
+                tmp[i].style.backgroundColor='pink';
+            }
+        }
+    }
+
+    function init() {
+        changeState();
+
+        $('findBtn').onclick = function () {
+            preOrder($('wrapper'));
+            findNode();
+        };
+        hoverChoose();
+
+
+
+    }
+    init();
+
+</script>
+</html>
