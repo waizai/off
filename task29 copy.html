@@ -1,0 +1,103 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+    <style>
+        .ipt {
+            padding: 10px;
+        }
+
+        .indent {
+            text-indent: 3em;
+            font-size: 12px;
+            color: #868280;
+        }
+
+    </style>
+</head>
+<body>
+<form id="container">
+    <div class="ipt" id="first-ipt">
+        <span>名称</span>
+        <input id="ipt1" name="名称" type="text">
+        <input id="submit1" type="button" value="验证">
+
+        <!--<p class="indent">必填，长度为4~16个字符</p>-->
+    </div>
+    <div class="ipt" id="second-ipt">
+        <span>名称</span>
+        <input id="ipt2" name="名称" type="text">
+        <input id="submit2" type="button" value="验证">
+
+    </div>
+    <div class="ipt" id="third-ipt">
+        <span>名称</span><input name="名称" type="text">
+        <input type="button" value="验证">
+
+    </div>
+</form>
+
+
+</body>
+<script>
+    /*
+     *1. 字符数为4~16位
+     *2. 每个英文字母、数字、英文符号长度为1
+     *3. 每个汉字，中文符号长度为2
+     *1.封装事件监听函数，
+     *2.实例
+     * */
+
+    function firstIpt() {
+        var oIpt1 = document.getElementById('ipt1');
+        var oFirstIpt = document.getElementById('first-ipt');
+        oFirstIpt.removeChild(oFirstIpt.lastChild);
+        var oP = document.createElement('p');
+        oFirstIpt.appendChild(oP);
+        oP.className = 'indent';
+        if (oIpt1.value == "") {
+            oP.innerHTML = '必填';
+        } else if (oIpt1.value.length >= 4 && oIpt1.value.length <= 16) {
+            oP.innerHTML = '格式正确';
+        } else if (oIpt1.value.length < 4 || oIpt1.value.length > 16) {
+            oP.innerHTML = '字符应该为4~16位';
+        }
+    }
+
+
+    function secondIpt() {
+        var oIpt2 = document.getElementById('ipt2');
+        var oSecondIpt = document.getElementById('second-ipt');
+        oSecondIpt.removeChild(oSecondIpt.lastChild);
+        var oP = document.createElement('p');
+        oSecondIpt.appendChild(oP);
+        oP.className = 'indent';
+        var str = oIpt2.value;
+        for (var i = 0; i < str.length; i++) {
+            var charcode = str.charCodeAt(i);
+            if (charcode >= 0 && charcode <= 128) {
+                oP.innerHTML = '格式正确';
+            } else if (str == "") {
+                oP.innerHTML = '必填';
+            }else if (charcode <0 ||charcode >128) {
+                oP.innerHTML = '不能输入汉字';
+            }
+        }
+    }
+
+
+    function init() {
+        var oSubmit1 = document.getElementById('submit1');
+        oSubmit1.onclick = firstIpt;
+
+        var oSubmit2 = document.getElementById('submit2');
+        oSubmit2.onclick = secondIpt;
+
+
+    }
+    init();
+
+
+</script>
+</html>
