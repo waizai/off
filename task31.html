@@ -1,0 +1,173 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+    <style>
+        #container, #first, #Inschool, #Inschool2, #Outschool, #Outschool2, #second {
+            padding: 10px;
+        }
+
+        #Inschool2, #Outschool2, #Inschool, #Outschool {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+<form id="container">
+    <div id="first">
+        <div id="input">
+            <input id="in" type="radio" name="people" value="在校生" checked="checked">在校生
+            <input id="out" type="radio" name="people" value="非在校生">非在校生
+        </div>
+        <div id="Inschool">
+            <span>学校</span><select id="city-select"></select><select id="school-select"></select>
+        </div>
+        <div id="Outschool">
+            <textarea cols="20" rows="10"></textarea>
+        </div>
+    </div>
+
+</form>
+
+
+</body>
+<script>
+    /*
+
+     思考： 从非在校切换到在校时显示什么？ 从在校切换到非在校显示什么？
+
+
+     * */
+    //学校的数据
+    var cityData = {
+        '北京': ['北京大学', '清华大学', '北京语言大学'],
+        '天津': ['天津大学', '南开大学', '天津工业大学'],
+        '河北': ['河北师范', '河北坝上', '河北草原']
+    }
+
+    //监听事件
+    var eventUtil = {
+        addHandler: function (element, type, handler) {
+            if (element.addEventListener) {
+                element.addEventListener(type, handler, false);
+            } else if (element.attachEvent) {
+                element.attachEvent('on' + type, handler);
+            } else {
+                element['on' + type] = handler;
+            }
+        },
+        getEvent: function (event) {
+            return event ? event : window.event;
+        },
+        getTarget: function (event) {
+            return event.target || event.srcElement;
+        },
+        preventDefault: function (event) {
+            if (event.preventDefault) {
+                event.preventDefault();
+            }
+            else {
+                event.returnValue = false;
+            }
+        }
+    }
+    //记录单选项选择变化
+    var radioData;
+
+    var oInschool = document.getElementById('Inschool');
+    var oOutschool = document.getElementById('Outschool');
+    var oSelect = document.getElementById('city-select');
+    var schoolSelect = document.getElementById('school-select');
+    var oIn = document.getElementById('in');
+    var oOut = document.getElementById('out');
+    var oFirst = document.getElementById('first');
+    var oInput = document.getElementById('input');
+    var aIpt = oFirst.getElementsByTagName('input');
+
+
+    init();
+
+    function init() {
+
+        radioData = {
+            school: '在校生',
+            city: '天津'
+        }
+
+        //在校生/非监听
+        initSchoolListener();
+
+        //城市切换
+        initCityListener();
+
+        refreshUI();
+
+    }
+
+    function initSchoolListener() {
+        eventUtil.addHandler(oInput, 'click', function () {
+            for (var i = 0; i < aIpt.length; i++) {
+                if (aIpt[i].checked) {
+                    radioData.school = aIpt[i].value;
+                }
+            }
+            refreshUI();
+        })
+
+    }
+    function initCityListener() {
+        eventUtil.addHandler(oSelect, 'change', function () {
+            var oOption = oSelect.getElementsByTagName('option');
+            for (var i = 0; i < oOption.length; i++) {
+                if (oOption[i].selected) {
+                    radioData.city = oOption[i].value;
+                }
+            }
+            refreshUI();
+        })
+    }
+
+    function refreshUI() {
+        //1. 取出当前的school 在学校做显示/非在校
+        if (radioData.school == '在校生') {
+            oIn.checked = true;
+            oOut.checked = false;
+            //显示学校的ui
+            //初始化城市 、学校
+            oInschool.style.display = 'block';
+            oOutschool.style.display = 'none';
+
+            var selectCity = radioData['city'];
+
+            var allcity = "";
+            var selectCityIndex = 0;
+            var i = 0;
+            for (var city in cityData) {
+                allcity += '<option  >' + city + '</option>';
+                if (city == selectCity) {
+                    selectCityIndex = i;
+                }
+                i++;
+            }
+            oSelect.innerHTML = allcity;
+            oSelect.options[selectCityIndex].selected = true;
+
+            var allschool = "";
+            for (var i in cityData[selectCity]) {
+                allschool += '<option>' + cityData[selectCity][i] + '</option>';
+            }
+            schoolSelect.innerHTML = allschool;
+        } else {
+            oOut.checked = true;
+            oIn.checked = false;
+            oInschool.style.display = 'none';
+            oOutschool.style.display = 'block';
+
+        }
+    }
+
+
+</script>
+</html>
